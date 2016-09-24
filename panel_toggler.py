@@ -22,15 +22,19 @@ class PanelTogglerWindowActivatable(GObject.Object, Gedit.WindowActivatable):
 	def do_activate(self):
 		self._header_bar    = find_widget(self.window, "headerbar")
 		self._panel_sidebar = find_widget(self.window, "bottom_panel_sidebar")
+		self._button_box    = Gtk.Box()
 		self._left_button   = Gtk.Button(image=image_file("left"))
 		self._bottom_button = Gtk.Button(image=image_file("bottom"))
 
+		self._button_box.get_style_context().add_class("linked")
 		self._bottom_button.connect("clicked", self.on_bottom_button_activated)
 		self._left_button.connect("clicked", self.on_left_button_activated)
 
-		self._header_bar.pack_end(self._bottom_button)
-		self._header_bar.pack_end(self._left_button)
+		self._header_bar.pack_end(self._button_box)
+		self._button_box.pack_end(self._bottom_button, True, True, 0)
+		self._button_box.pack_end(self._left_button, True, True, 1)
 
+		self._button_box.show()
 		self._left_button.show()
 		self._bottom_button.show()
 		self._panel_sidebar.hide()
@@ -38,6 +42,7 @@ class PanelTogglerWindowActivatable(GObject.Object, Gedit.WindowActivatable):
 	def do_deactivate(self):
 		self._left_button.destroy()
 		self._bottom_button.destroy()
+		self._button_box.destroy()
 		self._panel_sidebar.show()
 
 	def on_left_button_activated(self, _button):
