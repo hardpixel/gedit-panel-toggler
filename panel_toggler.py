@@ -40,9 +40,7 @@ class PanelTogglerWindowActivatable(GObject.Object, Gedit.WindowActivatable):
     self._button_box.pack_end(self._bottom_button, True, True, 0)
     self._button_box.pack_end(self._left_button, True, True, 1)
 
-    self._button_box.show()
-    self._left_button.show()
-    self._bottom_button.show()
+    self._button_box.show_all()
     self._panel_sidebar.hide()
 
   def add_icon_path(self):
@@ -52,8 +50,6 @@ class PanelTogglerWindowActivatable(GObject.Object, Gedit.WindowActivatable):
     Gtk.IconTheme.append_search_path(theme, path)
 
   def do_deactivate(self):
-    self._left_button.destroy()
-    self._bottom_button.destroy()
     self._button_box.destroy()
     self._panel_sidebar.show()
 
