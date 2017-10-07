@@ -45,6 +45,12 @@ class PanelTogglerWindowActivatable(GObject.Object, Gedit.WindowActivatable):
     self._bottom_button.show()
     self._panel_sidebar.hide()
 
+  def add_icon_path(self):
+    theme = Gtk.IconTheme.get_default()
+    path  = "%s/icons" % os.path.dirname(__file__)
+
+    Gtk.IconTheme.append_search_path(theme, path)
+
   def do_deactivate(self):
     self._left_button.destroy()
     self._bottom_button.destroy()
@@ -58,9 +64,3 @@ class PanelTogglerWindowActivatable(GObject.Object, Gedit.WindowActivatable):
   def on_bottom_button_activated(self, _button):
     status = not self._bottom_panel.get_property("visible")
     self._bottom_panel.set_property("visible", status)
-
-  def add_icon_path(self):
-    theme = Gtk.IconTheme.get_default()
-    path  = "%s/icons" % os.path.dirname(__file__)
-
-    Gtk.IconTheme.append_search_path(theme, path)
