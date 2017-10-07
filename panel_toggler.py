@@ -22,13 +22,15 @@ class PanelTogglerWindowActivatable(GObject.Object, Gedit.WindowActivatable):
 		self._bottom_button = None
 
 	def do_activate(self):
+		self.add_icon_path()
+
 		self._header_bar    = self.window.get_titlebar().get_children()[-1]
 		self._bottom_panel  = self.window.get_bottom_panel()
 		self._side_panel    = self.window.get_side_panel()
 		self._panel_sidebar = self._bottom_panel.get_parent().get_parent().get_children()[-1]
 		self._button_box    = Gtk.Box()
-		self._left_button   = Gtk.Button(image=image_file("left"))
-		self._bottom_button = Gtk.Button(image=image_file("bottom"))
+		self._left_button   = Gtk.Button.new_from_icon_name("left-panel-symbolic", Gtk.IconSize.BUTTON)
+		self._bottom_button = Gtk.Button.new_from_icon_name("bottom-panel-symbolic", Gtk.IconSize.BUTTON)
 
 		self._button_box.get_style_context().add_class("linked")
 		self._bottom_button.connect("clicked", self.on_bottom_button_activated)
@@ -57,8 +59,8 @@ class PanelTogglerWindowActivatable(GObject.Object, Gedit.WindowActivatable):
 		status = not self._bottom_panel.get_property("visible")
 		self._bottom_panel.set_property("visible", status)
 
-def image_file(image):
-	path = os.path.dirname(__file__)
-	icon = "/icons/gedit-view-" + image + "-pane-symbolic.svg"
+	def add_icon_path(self):
+		theme = Gtk.IconTheme.get_default()
+		path  = "%s/icons" % os.path.dirname(__file__)
 
-	return Gtk.Image.new_from_file(path + icon)
+		Gtk.IconTheme.append_search_path(theme, path)
