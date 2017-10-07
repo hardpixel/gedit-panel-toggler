@@ -15,13 +15,17 @@ class PanelTogglerWindowActivatable(GObject.Object, Gedit.WindowActivatable):
 		GObject.Object.__init__(self)
 
 		self._header_bar    = None
+		self._bottom_panel  = None
+		self._side_panel    = None
 		self._panel_sidebar = None
 		self._left_button   = None
 		self._bottom_button = None
 
 	def do_activate(self):
-		self._header_bar    = find_widget(self.window, "headerbar")
-		self._panel_sidebar = find_widget(self.window, "bottom_panel_sidebar")
+		self._header_bar    = self.window.get_titlebar().get_children()[-1]
+		self._bottom_panel  = self.window.get_bottom_panel()
+		self._side_panel    = self.window.get_side_panel()
+		self._panel_sidebar = self._bottom_panel.get_parent().get_parent().get_children()[-1]
 		self._button_box    = Gtk.Box()
 		self._left_button   = Gtk.Button(image=image_file("left"))
 		self._bottom_button = Gtk.Button(image=image_file("bottom"))
@@ -46,33 +50,12 @@ class PanelTogglerWindowActivatable(GObject.Object, Gedit.WindowActivatable):
 		self._panel_sidebar.show()
 
 	def on_left_button_activated(self, _button):
-		panel = self.window.get_side_panel()
-		status = not panel.get_property("visible")
-
-		panel.set_property("visible", status)
+		status = not self._side_panel.get_property("visible")
+		self._side_panel.set_property("visible", status)
 
 	def on_bottom_button_activated(self, _button):
-		panel = self.window.get_bottom_panel()
-		status = not panel.get_property("visible")
-
-		panel.set_property("visible", status)
-
-
-def find_widget(widget, widget_id):
-	if Gtk.Buildable.get_name(widget) == widget_id:
-		return widget
-
-	if not hasattr(widget, "get_children"):
-		return None
-
-	for child in widget.get_children():
-		ret = find_widget(child, widget_id)
-
-		if ret:
-			return ret
-
-	return None
-
+		status = not self._bottom_panel.get_property("visible")
+		self._bottom_panel.set_property("visible", status)
 
 def image_file(image):
 	path = os.path.dirname(__file__)
